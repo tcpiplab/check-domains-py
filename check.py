@@ -1,5 +1,6 @@
-#!/usr/bin/python
-import pythonwhois
+#!/usr/bin/python3
+import whois
+
 domains = []
 
 
@@ -15,24 +16,24 @@ def getDomains():
 def run():   
     for dom in domains:
         if dom is not None and dom != '':
-            details = pythonwhois.get_whois(dom)
-            if details['contacts']['registrant'] is not None:
+            details = whois.query(dom)
+            if details is not None:
                 unavailable.append(dom)
             else:
                 available.append(dom)
 
 def printAvailability():
-    print "-----------------------------"
-    print "Unavailable Domains: "
-    print "-----------------------------"
+    print("-----------------------------")
+    print("Unavailable Domains: ")
+    print("-----------------------------")
     for un in unavailable:
-        print un
-    print "\n"
-    print "-----------------------------"
-    print "Available Domains: "
-    print "-----------------------------"
+        print(un)
+    print("\n")
+    print("-----------------------------")
+    print("Available Domains: ")
+    print("-----------------------------")
     for av in available:
-        print av
+        print(av)
     
 
 if __name__ == "__main__":
