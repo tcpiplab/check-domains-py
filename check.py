@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from googlesearch import search
 import whois
 
 domains = []
@@ -12,6 +13,9 @@ def getDomains():
     with open('domains.txt', 'r+') as f:
         for domainName in f.read().splitlines():
             domains.append(domainName)
+            if domainName.endswith(".com"):
+                domainNameIo = domainName.replace(".com", ".io")
+                domains.append(domainNameIo)
 
 def run():   
     for dom in domains:
@@ -34,7 +38,6 @@ def printAvailability():
     print("-----------------------------")
     for av in available:
         print(av)
-    
 
 if __name__ == "__main__":
     getDomains()
