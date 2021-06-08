@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 from googlesearch import search
 import whois
+import time
 
 domains = []
 uniq_domains_list = []
@@ -37,24 +38,36 @@ def getDomains():
                     uniq_domains_list.append(i)
 
 def run():
-    uniq_domains_list.sort()
+    uniq_domains_list.sort(reverse=True)
+
+    counter = 0
 
     for dom in uniq_domains_list:
         if dom is not None and dom != '':
-            #print("Checking {}".format(dom))
-            details = whois.query(dom, slow_down=1)
+            print("Checking {}".format(dom))
+
+            details = whois.query(dom, slow_down=3, force=1)
+
+            counter = counter + 1
+
             if details is not None:
                 unavailable.append(dom)
             else:
                 available.append(dom)
 
+            if counter >= 40:
+                # The whois servers will return "Exception: connect: Connection refused" if you lookup too many
+                # domain names using the same whois socket.
+                print("Stopping at 40 lookups. Break your list into smaller pieces and rerun.")
+                break
+
 def printAvailability():
-    print("-----------------------------")
-    print("Unavailable Domains: ")
-    print("-----------------------------")
-    for un in unavailable:
-        print(un)
-    print("\n")
+    # print("-----------------------------")
+    # print("Unavailable Domains: ")
+    # print("-----------------------------")
+    #for un in unavailable:
+        #print(un)
+    # print("\n")
     print("-----------------------------")
     print("Available Domains: ")
     print("-----------------------------")
