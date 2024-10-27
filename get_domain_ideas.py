@@ -1,8 +1,8 @@
-import openai
 import os
+import re
+from openai import OpenAI
 
-# Set up your OpenAI API key
-openai.api_key = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Read the input words from domains.txt
 with open('domains.txt', 'r') as f:
@@ -14,11 +14,12 @@ prompt = (
     "The domain names should be single words or pairs of words without any spaces.\n"
     "If a domain name is formed by combining two words, please also output the same pair of words joined by a single '-' character on the next line.\n"
     "Do not include the top-level domain.\n"
+    "Do not include any numbers, bullets, or other characters before the domain names.\n"
     "Only generate 20 domain name ideas in total."
 )
 
 # Make the API call
-response = openai.ChatCompletion.create(
+response = client.chat.completions.create(
     model='gpt-3.5-turbo',
     messages=[
         {"role": "system", "content": "You are a helpful assistant that generates domain name ideas."},
@@ -26,9 +27,27 @@ response = openai.ChatCompletion.create(
     ],
     max_tokens=500,
     n=1,
-    temperature=0.7,
+    temperature=0.7
 )
 
-# Extract and print the response
-domain_ideas = response['choices'][0]['message']['content']
-print(domain_ideas)
+# Extract the response
+raw_domain_ideas = response.choices[0].message.content
+
+#print(raw_domain_ideas)
+
+# Process the domain ideas
+domain_ideas = []
+for line in raw_domain_ideas.split('\n'):
+    # Remove any leading/trailing whitespace and skip empty lines
+    line = line.strip()
+    # Skip lines that start with a number or a hyphen
+    if line and not line.startswith('-'): # and not line[0].isdigit():
+        # Remove leading digits, dot, and whitespace
+        line = re.sub(r'^\d+\.\s*', '', line)
+        domain_ideas.append(line)
+
+# Join the processed domain ideas with newlines
+final_domain_ideas = '\n'.join(domain_ideas)
+
+# Print the result
+print(final_domain_ideas)
