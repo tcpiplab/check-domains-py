@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 from googlesearch import search
 import whois
 import time
@@ -10,7 +9,7 @@ available = []
 unavailable = []
 
 
-def getDomains():
+def get_domains():
     with open('domains.txt', 'r+') as f:
         for domain_name in f.read().splitlines():
 
@@ -37,23 +36,30 @@ def getDomains():
                 if i not in uniq_domains_list:
                     uniq_domains_list.append(i)
 
-def run():
+def check_domains():
     uniq_domains_list.sort(reverse=True)
 
     counter = 0
 
-    for dom in uniq_domains_list:
-        if dom is not None and dom != '':
-            print("Checking {}".format(dom))
+    domain_details = None
 
-            details = whois.query(dom, slow_down=3, force=1)
+    for domain_name in uniq_domains_list:
+        if domain_name is not None and domain_name != '':
+            print("Checking {}".format(domain_name))
+
+            try:
+                domain_details = whois.whois(domain_name)
+            except whois.parser.PywhoisError as e:
+                # print("Exception: {}".format(e))
+                # pass
+                domain_details = None
 
             counter = counter + 1
 
-            if details is not None:
-                unavailable.append(dom)
+            if domain_details is not None:
+                unavailable.append(domain_name)
             else:
-                available.append(dom)
+                available.append(domain_name)
 
             if counter >= 40:
                 # The whois servers will return "Exception: connect: Connection refused" if you lookup too many
@@ -61,13 +67,16 @@ def run():
                 print("Stopping at 40 lookups. Break your list into smaller pieces and rerun.")
                 break
 
-def printAvailability():
+        time.sleep(7)
+
+
+def print_availability():
     # print("-----------------------------")
     # print("Unavailable Domains: ")
     # print("-----------------------------")
     #for un in unavailable:
         #print(un)
-    # print("\n")
+    print("\n")
     print("-----------------------------")
     print("Available Domains: ")
     print("-----------------------------")
@@ -75,8 +84,8 @@ def printAvailability():
         print(av)
 
 if __name__ == "__main__":
-    getDomains()
-    run()
-    printAvailability()
+    get_domains()
+    check_domains()
+    print_availability()
 
 
