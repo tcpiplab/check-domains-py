@@ -4,8 +4,8 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-# Read the input words from domains.txt
-with open('domains.txt', 'r') as f:
+# Read the input words from seed_words.txt
+with open('seed_words.txt', 'r') as f:
     input_words = f.read().split()
 
 # Construct the prompt
@@ -51,3 +51,6 @@ final_domain_ideas = '\n'.join(domain_ideas)
 
 # Print the result
 print(final_domain_ideas)
+
+# TODO call the check.py script with the final domain ideas as input
+# TODO write the available domains to a file and to STDOUT
