@@ -1,14 +1,3 @@
-this
-is
-an
 example
-showing
-possible
-domains
-names
-without
-TLD
-and
-separated
-by
-newlines
+some123available456domain
+some-123-available-456-domain

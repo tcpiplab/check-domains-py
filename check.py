@@ -1,6 +1,12 @@
 from googlesearch import search
 import whois
 import time
+import random
+from colorama import Fore, Back, Style, init
+
+# Initialize colorama and set auto-reset to True
+init(autoreset=True)
+
 
 domains = []
 uniq_domains_list = []
@@ -19,7 +25,8 @@ def get_domains():
             # Collapse multiple words into one string
             domain_name = domain_name.replace(" ", "")
 
-            # Accommodate plain words in the list
+            # Accommodate plain words in the list by searching for the .com and .io version of each plain word
+            # Check if the domain_name already ends with .com or .io
             if (domain_name.endswith(".io") is False) and (domain_name.endswith(".com") is False):
                 domain_name = domain_name + ".com"
 
@@ -45,7 +52,7 @@ def check_domains():
 
     for domain_name in uniq_domains_list:
         if domain_name is not None and domain_name != '':
-            print("Checking {}".format(domain_name))
+            print(f"{Fore.GREEN}[+] Checking {domain_name}{Style.RESET_ALL}")
 
             try:
                 domain_details = whois.whois(domain_name)
@@ -64,10 +71,18 @@ def check_domains():
             if counter >= 40:
                 # The whois servers will return "Exception: connect: Connection refused" if you lookup too many
                 # domain names using the same whois socket.
-                print("Stopping at 40 lookups. Break your list into smaller pieces and rerun.")
+                print(f"{Fore.YELLOW}[!] Stopping at 40 lookups. "
+                      f"Break your list into smaller pieces and rerun.{Style.RESET_ALL}")
                 break
 
-        time.sleep(7)
+        # Generate a random number of seconds for the upcoming sleep() call.
+        sleep_time = random.randint(1, 10)
+
+        sleep_time_string = str(sleep_time)
+
+        print(f"{Fore.GREEN}[+] Sleeping for {sleep_time_string} seconds{Style.RESET_ALL}")
+
+        time.sleep(sleep_time)
 
 
 def print_availability():
@@ -77,11 +92,11 @@ def print_availability():
     #for un in unavailable:
         #print(un)
     print("\n")
-    print("-----------------------------")
-    print("Available Domains: ")
-    print("-----------------------------")
-    for av in available:
-        print(av)
+    print(f"-----------------------------")
+    print(f"{Fore.GREEN}{Style.BRIGHT}Available Domains{Style.RESET_ALL}: ")
+    print(f"-----------------------------")
+    for available_domain_name in available:
+        print(f"{Fore.GREEN}{available_domain_name}{Style.RESET_ALL}")
 
 if __name__ == "__main__":
     get_domains()
