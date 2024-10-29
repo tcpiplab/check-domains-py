@@ -16,7 +16,7 @@ unavailable = []
 
 
 def get_domains():
-    with open('seed_words.txt', 'r+') as f:
+    with open('suggested_domains.txt', 'r+') as f:
         for domain_name in f.read().splitlines():
 
             # Convert to lowercase

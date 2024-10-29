@@ -47,10 +47,15 @@ for line in raw_domain_ideas.split('\n'):
         domain_ideas.append(line)
 
 # Join the processed domain ideas with newlines
-final_domain_ideas = '\n'.join(domain_ideas)
+suggested_domains = '\n'.join(domain_ideas)
 
 # Print the result
-print(final_domain_ideas)
+print(suggested_domains)
 
-# TODO call the check.py script with the final domain ideas as input
+# TODO call the check_domain_availability.py script with the final domain ideas as input
+
 # TODO write the available domains to a file and to STDOUT
+# Write suggested_domains to a file
+with open('suggested_domains.txt', 'w') as f:
+    f.write(suggested_domains)
+
